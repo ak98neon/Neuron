@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConnectedNeuron implements Neuron {
 
@@ -21,7 +22,7 @@ public class ConnectedNeuron implements Neuron {
 
   private final AtomicDouble bias;
 
-  private volatile int signalReceived;
+  private AtomicInteger signalReceived;
 
   private volatile double forwardResult;
 
@@ -32,6 +33,7 @@ public class ConnectedNeuron implements Neuron {
     this.activationFunction = activationFunction;
     this.name = name;
     this.bias = new AtomicDouble(bias);
+    this.signalReceived = new AtomicInteger();
   }
 
   public double getForwardResult() {
@@ -40,10 +42,10 @@ public class ConnectedNeuron implements Neuron {
 
   @Override
   public void forwardSignalReceived(Neuron from, Double value) {
-    signalReceived++;
+    signalReceived.incrementAndGet();
     inputSignals.put(from, value);
 
-    if (backwardConnections.size() == signalReceived) {
+    if (backwardConnections.size() == signalReceived.get()) {
       double forwardInputToActivationFunction
           = backwardConnections
           .entrySet()
@@ -58,7 +60,7 @@ public class ConnectedNeuron implements Neuron {
 
       forwardConnections
           .forEach(con -> con.forwardSignalReceived(ConnectedNeuron.this, signalToSend));
-      signalReceived = 0;
+      signalReceived.set(0);
     }
   }
 
