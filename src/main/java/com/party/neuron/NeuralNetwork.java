@@ -2,6 +2,7 @@ package com.party.neuron;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import com.party.neuron.activate.ActivationFunction;
+import com.party.neuron.layer.HiddenLayers;
 import com.party.neuron.layer.InputLayer;
 import com.party.neuron.layer.Layer;
 import com.party.neuron.layer.OutputLayer;
@@ -31,6 +32,10 @@ public class NeuralNetwork implements Neuron {
     this.bias = new AtomicDouble(bias);
     this.signalReceived = new AtomicInteger();
     this.layers = layers;
+  }
+
+  public List<Layer> getLayers() {
+    return layers;
   }
 
   public double getForwardResult() {
@@ -149,14 +154,14 @@ public class NeuralNetwork implements Neuron {
       }
 
       OutputLayer outputLayer = OutputLayer.initOutput(countOfOutputNeurons);
-//      HiddenLayers hiddenLayers = HiddenLayers.initHidden(countOfHiddenNeurons, hiddenLayersCount,
-//          outputLayer);
-      InputLayer inputLayer = InputLayer.init(countOfInputNeurons, inputData,
+      HiddenLayers hiddenLayers = HiddenLayers.initHidden(countOfHiddenNeurons, hiddenLayersCount,
           outputLayer);
+      InputLayer inputLayer = InputLayer.init(countOfInputNeurons, inputData,
+          hiddenLayers);
 
       List<Layer> layers = new ArrayList<>();
       layers.add(inputLayer);
-//      layers.add(hiddenLayers);
+      layers.add(hiddenLayers);
       layers.add(outputLayer);
 
       return new NeuralNetwork(

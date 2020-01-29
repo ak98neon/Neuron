@@ -13,39 +13,20 @@ public class InputLayer implements Layer {
     this.weightMatrix = weightMatrix;
   }
 
-//  public static InputLayer initWithHidden(int countOfNeurons, double[] inputData,
-//      HiddenLayers hiddenLayers) {
-//    return init(countOfNeurons, inputData, new InputLayer(
-//        hiddenLayers.getNeuronsMatrix(), null)
-//    );
-//  }
+  public static InputLayer init(int countOfNeurons, Layer nextLayer) {
+    return init(countOfNeurons, new double[countOfNeurons], nextLayer);
+  }
 
   public static InputLayer init(int countOfNeurons, double[] inputData,
       Layer nextLayer) {
-    if (countOfNeurons != inputData.length) {
-      throw new RuntimeException("InputLayer: count of neurons not equal to input data length");
-    }
-
-    Array2DRowRealMatrix neuronsMatrix = new Array2DRowRealMatrix(1, countOfNeurons);
-    for (int i = 0; i < countOfNeurons; i++) {
-      neuronsMatrix.setEntry(0, i, inputData[i]);
-    }
-
-    Array2DRowRealMatrix weightMatrix = new Array2DRowRealMatrix(
-        nextLayer.getNeuronsMatrix().getColumnDimension(),
-        countOfNeurons);
-    for (int i = 0; i < weightMatrix.getColumnDimension(); i++) {
-      for (int j = 0; j < weightMatrix.getRowDimension(); j++) {
-        weightMatrix.setEntry(j, i, Layer.randomWeight());
-      }
-    }
-
-    return new InputLayer(neuronsMatrix, weightMatrix);
+    InitLayer initLayer = InitLayer.init(countOfNeurons, inputData);
+    initLayer.connect(nextLayer);
+    return new InputLayer(initLayer.getNeuronsMatrix(), initLayer.getWeightMatrix());
   }
 
   @Override
   public Array2DRowRealMatrix calculateSignals() {
-    return this.weightMatrix.multiply(this.neuronsMatrix);
+    return weightMatrix.multiply(neuronsMatrix);
   }
 
   @Override
