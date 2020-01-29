@@ -1,5 +1,7 @@
 package com.party.neuron;
 
+import com.party.neuron.activate.SigmoidFunction;
+import java.util.Random;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,47 +26,18 @@ public class NeuronApplication implements CommandLineRunner {
         {0}, {1}, {1}, {0}
     };
 
-    InputNeuron inputX = new InputNeuron();
-    InputNeuron inputY = new InputNeuron();
-
-    ConnectedNeuron outputNeuron = new ConnectedNeuron.Builder()
-        .bias(-1)
+    NeuralNetwork neuralNetwork = new NeuralNetwork.Builder()
+        .bias(new Random().nextDouble())
         .activationFunction(new SigmoidFunction())
+        .countOfInputNeurons(2)
+        .inputData(trainingInput[0])
+        .trainingData(trainingOutputs[0])
+        .countOfHiddenNeurons(3)
+        .countOfOutputNeurons(4)
+        .hiddenLayersCount(1)
+        .name("neural-nn")
         .build();
 
-    inputX.connect(outputNeuron, 1.);
-    inputY.connect(outputNeuron, 1.);
-
-    inputX.forwardSignalReceived(null, 1.);
-    inputY.forwardSignalReceived(null, 0.);
-
-    double result = outputNeuron.getForwardResult();
-    System.out.printf("Prediction %3f\n", result);
-
-//    InputNeuron inputFriend = new InputNeuron();
-//    InputNeuron inputVodka = new InputNeuron();
-//    InputNeuron inputSunny = new InputNeuron();
-//
-//    ConnectedNeuron outputNeuron = new ConnectedNeuron.Builder()
-//        .bias(-1)
-//        .activationFunction(new SigmoidFunction())
-//        .build();
-//
-//    inputFriend.connect(outputNeuron, 1.);
-//    inputVodka.connect(outputNeuron, 1.);
-//    inputSunny.connect(outputNeuron, 1.);
-//
-//    inputFriend.forwardSignalReceived(null, 1.);
-//    inputVodka.forwardSignalReceived(null, 0.);
-//    inputSunny.forwardSignalReceived(null, 1.);
-//
-//    double result = outputNeuron.getForwardResult();
-//    System.out.printf("Prediction %3f\n", result);
+    System.out.println("Result: " + neuralNetwork.getForwardResult());
   }
-
-//  public double backwardForward() {
-//    for (int i = 0; i < 20_000; i++) {
-//
-//    }
-//  }
 }

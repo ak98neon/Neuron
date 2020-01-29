@@ -1,4 +1,4 @@
-package com.party.neuron;
+package com.party.neuron.activate;
 
 public interface ActivationFunction {
 
