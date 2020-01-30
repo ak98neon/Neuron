@@ -24,9 +24,12 @@ public class InputLayer implements Layer {
     return new InputLayer(initLayer.getNeuronsMatrix(), initLayer.getWeightMatrix());
   }
 
-  @Override
-  public Array2DRowRealMatrix calculateSignals() {
-    return weightMatrix.multiply(neuronsMatrix);
+  public Array2DRowRealMatrix calculateSignals(double bias) {
+    Array2DRowRealMatrix multiply = weightMatrix.multiply(neuronsMatrix);
+    for (int i = 0; i < multiply.getRowDimension(); i++) {
+      multiply.setEntry(i, 0, multiply.getEntry(i, 0) + bias);
+    }
+    return multiply;
   }
 
   @Override

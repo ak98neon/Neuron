@@ -12,6 +12,4 @@ public interface Layer {
   Array2DRowRealMatrix getNeuronsMatrix();
 
   Array2DRowRealMatrix getWeightMatrix();
-
-  Array2DRowRealMatrix calculateSignals();
 }

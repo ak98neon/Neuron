@@ -52,9 +52,4 @@ public class InitLayer implements Layer {
   public Array2DRowRealMatrix getWeightMatrix() {
     return this.weightMatrix;
   }
-
-  @Override
-  public Array2DRowRealMatrix calculateSignals() {
-    throw new UnsupportedOperationException();
-  }
 }

@@ -11,12 +11,19 @@ public class OutputLayer implements Layer {
   }
 
   public static OutputLayer initOutput(int countOfNeurons) {
-    Array2DRowRealMatrix neurons = new Array2DRowRealMatrix(1, countOfNeurons);
+    Array2DRowRealMatrix neurons = new Array2DRowRealMatrix(countOfNeurons, 1);
     for (int i = 0; i < countOfNeurons; i++) {
-      neurons.setEntry(0, i, 0);
+      neurons.setEntry(i, 0, 0);
     }
 
     return new OutputLayer(neurons);
+  }
+
+  public Array2DRowRealMatrix forwardResult(Array2DRowRealMatrix hiddenSignals) {
+    for (int i = 0; i < neuronsMatrix.getRowDimension(); i++) {
+      neuronsMatrix.setEntry(i, 0, hiddenSignals.getEntry(i, 0));
+    }
+    return neuronsMatrix;
   }
 
   @Override
@@ -26,11 +33,6 @@ public class OutputLayer implements Layer {
 
   @Override
   public Array2DRowRealMatrix getWeightMatrix() {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public Array2DRowRealMatrix calculateSignals() {
     throw new UnsupportedOperationException();
   }
 }

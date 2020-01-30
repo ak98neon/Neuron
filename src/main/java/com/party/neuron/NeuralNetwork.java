@@ -1,7 +1,7 @@
 package com.party.neuron;
 
-import com.google.common.util.concurrent.AtomicDouble;
 import com.party.neuron.activate.ActivationFunction;
+import com.party.neuron.constanse.LayersName;
 import com.party.neuron.layer.HiddenLayers;
 import com.party.neuron.layer.InputLayer;
 import com.party.neuron.layer.Layer;
@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 
 public class NeuralNetwork implements Neuron {
 
@@ -18,9 +19,9 @@ public class NeuralNetwork implements Neuron {
 
   private final ActivationFunction activationFunction;
   private final List<Layer> layers;
-  private final AtomicDouble bias;
+  private final double bias;
   private AtomicInteger signalReceived;
-  private volatile double forwardResult;
+  private Array2DRowRealMatrix forwardResult;
 
   private NeuralNetwork(
       final ActivationFunction activationFunction,
@@ -29,7 +30,7 @@ public class NeuralNetwork implements Neuron {
       final List<Layer> layers) {
     this.activationFunction = activationFunction;
     this.name = name;
-    this.bias = new AtomicDouble(bias);
+    this.bias = bias;
     this.signalReceived = new AtomicInteger();
     this.layers = layers;
   }
@@ -38,7 +39,8 @@ public class NeuralNetwork implements Neuron {
     return layers;
   }
 
-  public double getForwardResult() {
+  public Array2DRowRealMatrix getForwardResult() {
+    forwardSignalByLayers();
     return forwardResult;
   }
 
@@ -65,6 +67,17 @@ public class NeuralNetwork implements Neuron {
 ////          .forEach(con -> con.forwardSignalReceived(ConnectedNeuron.this, signalToSend));
 //      signalReceived.set(0);
 //    }
+  }
+
+  public void forwardSignalByLayers() {
+    InputLayer inputLayer = (InputLayer) layers.get(LayersName.INPUT_LAYER);
+    HiddenLayers hiddenLayer = (HiddenLayers) layers.get(LayersName.HIDDEN_LAYER);
+    OutputLayer outputLayer = (OutputLayer) layers.get(LayersName.OUTPUT_LAYER);
+
+    Array2DRowRealMatrix inputLayerSignals = inputLayer.calculateSignals(bias);
+    Array2DRowRealMatrix hiddenLayerSignals = hiddenLayer
+        .calculateHiddenSignals(inputLayerSignals, bias);
+    this.forwardResult = outputLayer.forwardResult(hiddenLayerSignals);
   }
 
   @Override
