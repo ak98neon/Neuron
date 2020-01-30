@@ -33,7 +33,7 @@ public class NeuronApplication implements CommandLineRunner {
         .inputData(trainingInput[1])
         .trainingData(trainingOutputs[0])
         .countOfHiddenNeurons(3)
-        .hiddenLayersCount(2)
+        .hiddenLayersCount(1)
         .countOfOutputNeurons(4)
         .name("neural-nn")
         .build();
